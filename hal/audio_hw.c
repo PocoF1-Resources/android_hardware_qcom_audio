@@ -5593,6 +5593,11 @@ static int out_set_volume(struct audio_stream_out *stream, float left,
     int ret = 0;
 
     ALOGD("%s: called with left_vol=%f, right_vol=%f", __func__, left, right);
+    if (out->a2dp_muted && (left > 0.0f || right > 0.0f)) {
+        ALOGD("%s: Unmuting A2DP stream (volume > 0)", __func__);
+        out->a2dp_muted = false;
+    }
+
     if (out->usecase == USECASE_AUDIO_PLAYBACK_MULTI_CH) {
         /* only take left channel into account: the API is for stereo anyway */
         out->muted = (left == 0.0f);
